@@ -1,17 +1,18 @@
-IMG_NAME='GroundlightNMS'
-TARGET_HOSTNAME=GroundlightNMS
-FIRST_USER_NAME=glnms
+IMG_NAME='GroundlightMNS'
+TARGET_HOSTNAME=GroundlightMNS
+FIRST_USER_NAME=glmns
 
 ENABLE_SSH=1
 
 # Makes a qemu-compatible image - for easier testing.
-USE_QEMU=1
+#USE_QEMU=1
+USE_QEMU=0
 
 # stage2 gets us a working "lite" image without desktop.
-# stage3 adds basic desktop stuff, which we don't need yet.
+# stage3 adds basic desktop stuff
 # stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
-# stage-gl2 adds the NMS running in docker
-STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2"
+# stage-gl2 adds the MNS running in docker
+STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2 stage3"
 
 # xz is multi-threaded so will run faster!
 DEPLOY_COMPRESSION=xz
