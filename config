@@ -1,0 +1,27 @@
+IMG_NAME='GroundlightNMS'
+TARGET_HOSTNAME=GroundlightNMS
+FIRST_USER_NAME=glnms
+
+ENABLE_SSH=1
+
+# Makes a qemu-compatible image - for easier testing.
+USE_QEMU=1
+
+# stage2 gets us a working "lite" image without desktop.
+# stage3 adds basic desktop stuff, which we don't need yet.
+# stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
+STAGE_LIST="stage0 stage1 stage2 stage-gl1"
+
+# xz is multi-threaded so will run faster!
+DEPLOY_COMPRESSION=xz
+# Higher compression takes longer, so it's turned down during dev.
+# We should turn it back up when we're ready to publish.
+# For reference, with a 3.3GB base .img file:
+# xz level 0 took 1m50s to compress to 1.1GB
+# xz level 1 took 2m20s to compress to 986MB
+# xz level 3 took 3m30s to compress to 950MB
+# xz level 9 took 7m30s to compress to 733MB
+COMPRESSION_LEVEL=0
+
+# faster but "experimental" and crashed when I tried it.
+#USE_QCOW2=1

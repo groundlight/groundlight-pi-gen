@@ -7,3 +7,8 @@ SKIP_IMAGES
 .pc
 *-pc
 apt-cacher-ng/
+
+*.swp
+
+# This was ignored in the original, but we sure want it!
+#config
