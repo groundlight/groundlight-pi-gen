@@ -16,7 +16,7 @@ STAGE_LIST="stage0 stage1 stage2 stage-gl1"
 DEPLOY_COMPRESSION=xz
 # Higher compression takes a while, so it's turned down during dev.
 # We should turn it back up when we're ready to publish.
-COMPRESSION_LEVEL=1
+COMPRESSION_LEVEL=3
 
 # faster but "experimental" and crashed when I tried it.
 #USE_QCOW2=1

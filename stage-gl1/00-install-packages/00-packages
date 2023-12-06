@@ -1,10 +1,11 @@
 # Absolute basics
 python3 python3-pip
 
-# Big python libraries
-# (We'd rather install this stuff with pip or poetry, but for now this gets us going.)
+# Install python libraries
+# (We'd rather install this stuff with pip or poetry, but pip struggles inside chroot for anything
+# complicated.  So for now this works.)
 python3-opencv python3-numpy
-python3-pydantic python3-pil
+python3-pydantic python3-pil python3-yaml
 
 # Nice-to-have utilities
 iotop nethogs net-tools
