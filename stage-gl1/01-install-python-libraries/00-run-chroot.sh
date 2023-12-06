@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 pipit() {
+    # pip needs the break-system-packages flag to run in the chroot
     /usr/bin/pip3 $@ --break-system-packages
 }
 
