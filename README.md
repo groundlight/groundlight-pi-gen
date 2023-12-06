@@ -15,8 +15,9 @@ On the appropriate machine, run:
 time sudo ./build.sh
 ```
 
-Wait ~10 minutes, and then look in the `work/GroundlightNMS/export-image/` for a file with a name like
-`2023-12-06-GroundlightNMS-lite-qemu.img`, which should be around 3GB at current.
+Wait ~10 minutes, and then look in the `deploy/` for a file with a name like
+`image_2023-12-06-GroundlightNMS-sdk-qemu.img.xz` which will be ~1GB for now.
+(See the `COMPRESSION_LEVEL` setting in (`config`)[config] to trade speed vs size.)
 
 Copy this to your laptop, and then you can burn it to an SD card using the [Raspberry Pi Image](https://github.com/raspberrypi/rpi-imager).
 
