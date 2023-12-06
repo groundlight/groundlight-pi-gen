@@ -1,0 +1,6 @@
+# disabling for now because it slows down dev iterations
+
+IMG_SUFFIX="-sdk"
+if [ "${USE_QEMU}" = "1" ]; then
+	export IMG_SUFFIX="${IMG_SUFFIX}-qemu"
+fi
