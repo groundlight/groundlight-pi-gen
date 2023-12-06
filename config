@@ -15,7 +15,7 @@ STAGE_LIST="stage0 stage1 stage2 stagegl1"
 # xz is multi-threaded so will run faster!
 DEPLOY_COMPRESSION=xz
 # zip level 6 (default) got 65% for 5-stages, but took maybe 10 minutes?
-COMPRESSION_LEVEL=3
+COMPRESSION_LEVEL=1
 
 # faster but "experimental" and crashed when I tried it.
 #USE_QCOW2=1

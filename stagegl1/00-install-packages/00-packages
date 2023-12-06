@@ -1,3 +1,11 @@
+# Absolute basics
 python3 python3-pip
 
+# Big python libraries
+# (We'd rather install this stuff with pip or poetry, but for now this gets us going.)
+python3-opencv python3-numpy
+python3-pydantic python3-pil
+
+# Nice-to-have utilities
+iotop nethogs net-tools
 
