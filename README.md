@@ -3,7 +3,9 @@
 This repo builds the OS image for a Groundlight MNS appliance running on Raspberry Pi hardware.
 
 Use this repo to build the `.img` file which gets burned to an SD card.  When that SD card is booted on the Raspberry Pi, 
-it runs the Groundlight Monitoring Notification Server.
+it runs the [Groundlight Monitoring Notification Server](https://github.com/groundlight/monitoring-notification-server).
+The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
+appropriate.
 
 This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](PI-GEN-README.md) for how everything works.  But the (`config`)[config] file is the key source of control.
 
