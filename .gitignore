@@ -8,5 +8,9 @@ SKIP_IMAGES
 *-pc
 apt-cacher-ng/
 
-# Groundlight changes below...
+
+#
+# Groundlight additions below
+#
 *.swp
+/deleteme*
