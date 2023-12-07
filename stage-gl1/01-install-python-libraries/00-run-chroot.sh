@@ -1,10 +1,14 @@
 #!/bin/bash -e
 
+set -ex
+
+mkdir -p /opt/groundlight/venv
+python3 -m venv /opt/groundlight/venv
+source /opt/groundlight/venv/bin/activate
+
 pipit() {
-    # pip needs the break-system-packages flag to run in the chroot
-    /usr/bin/pip3 $@ --break-system-packages
+    /usr/bin/pip3 $@ 
 }
 
 pipit install groundlight
-# Framegrab will try to re-install opencv, which won't go well.
-pipit install --no-deps framegrab
+pipit install framegrab

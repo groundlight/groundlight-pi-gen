@@ -7,7 +7,7 @@ it runs the [Groundlight Monitoring Notification Server](https://github.com/grou
 The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
 appropriate.
 
-This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](PI-GEN-README.md) for how everything works.  But the (`config`)[config] file is the key source of control.
+This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](PI-GEN-README.md) for how everything works.  But the (`glmns-config`)[glmns-config] file is the key source of control.  (What is called "config" in the original.)
 
 ## Building Images
 
@@ -19,7 +19,7 @@ You _can_ build this on an x86 instance, but it will take ~3x longer, and it's n
 On the appropriate machine, run:
 
 ```
-time sudo ./build.sh
+./dobuild.sh
 ```
 
 ### Building in Docker
@@ -27,19 +27,25 @@ time sudo ./build.sh
 If you're not crazy about running this big script as root, you can use:
 
 ```
-time ./build-docker.sh
+time ./build-docker.sh -c glmns-config
 ```
 
 It's slower (how much?), but still manages to cache previous runs.  The second time you run it
 to re-use the cache, you should do:
 
 ```
-time CONTINUE=1 ./build-docker.sh
+time CONTINUE=1 ./build-docker.sh -c glmns-config
 ```
 
 ### Troubleshooting
 
-Add `CLEAN=1` before running the script to start over.
+To start over try
+
+```
+./dobuild.sh CLEAN=1
+```
+
+**Unmount errors** - try `sudo mv work deleteme-work`
 
 ## Using the images
 

@@ -1,5 +1,6 @@
 deploy/*
 work/*
+config
 postrun.sh
 SKIP
 SKIP_IMAGES
@@ -7,7 +8,5 @@ SKIP_IMAGES
 *-pc
 apt-cacher-ng/
 
+# Groundlight changes below...
 *.swp
-
-# This was ignored in the original, but we sure want it!
-#config
