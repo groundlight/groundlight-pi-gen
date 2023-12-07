@@ -1,36 +1,35 @@
+# The config file defining the Groundlight MNS image.
 IMG_NAME='GroundlightMNS'
 TARGET_HOSTNAME=GroundlightMNS
 FIRST_USER_NAME=glmns
 
+#
+# core functionality
+#
+
 ENABLE_SSH=1
+RELEASE=bookworm
+# bookworm is newer and works. bullseye is older, and I think really doesn't.
+# Why is this even here?  Just as a reminder not to try bullseye without being careful.
 
-# Makes a qemu-compatible image - for easier testing.
-USE_QEMU=1
-
-RELEASE=bullseye
-#RELEASE=bookworm
-# bookworm is newer than bullseye, and gets py3.11, but maybe has pip problems?
-
+# stage0,1 set up basic linux.
 # stage2 gets us a working "lite" headless distribution w/o desktop
 # stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
 # stage-gl2 adds the MNS running in docker
 # stage3 adds basic desktop stuff
 STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2 stage3"
 
-# Dev settings - don't compress.  It's really quite slow.
-DEPLOY_COMPRESSION=none
-COMPRESSION_LEVEL=0
-# Higher compression takes longer, so it's turned down during dev.
-# We should turn it back up when we're ready to publish.
-# For reference, with a 3.3GB base .img file 
-# Times are on a 4 core m7g instance, and include cached build.sh time
-# xz level 0 took 1m50s to compress to 1.1GB
-# xz level 1 took 2m20s to compress to 986MB
-# xz level 3 took 3m30s to compress to 950MB
-# xz level 9 took 7m30s to compress to 733MB
-# Publish settings:
-#DEPLOY_COMPRESSION=xz
-#COMPRESSION_LEVEL=9
+#
+# Options used for development.
+# (These get overridden by glmns-config-prod)
+#
+
+# Makes a qemu-compatible image - for easier testing.
+USE_QEMU=1
 
 # faster but "experimental" and crashed when I tried it.
 #USE_QCOW2=1
+
+# Dev settings - don't compress.  It's really quite slow.
+DEPLOY_COMPRESSION=none
+COMPRESSION_LEVEL=0
