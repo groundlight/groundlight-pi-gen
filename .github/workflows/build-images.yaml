@@ -23,15 +23,31 @@ jobs:
         sudo apt install qemu qemu-user-static
         sudo update-binfmts --enable
 
+    - name: Detect if release
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "IS_RELEASE=1" >> $GITHUB_ENV
+        else
+          echo "IS_RELEASE=0" >> $GITHUB_ENV
+        fi
+
     # Build image with docker
-    - name: Build the full image
-      run: ./build-docker.sh -c gl-config-release
+    - name: Build the full images
+      run: |
+        if [[ ${IS_RELEASE} == "1" ]]; then
+          # Do a release build.
+          ./build-docker.sh -c gl-config-release
+        else
+          # faster test build.
+          ./build-docker.sh -c gl-config
+        fi
 
     # Print output directory files
     - name: List output files
       run: ls -lh deploy
 
     - name: Upload built image
+      if: env.IS_RELASE == '1'
       uses: actions/upload-artifact@v3
       with:
         name: rpios-image
@@ -39,6 +55,7 @@ jobs:
         if-no-files-found: error
 
     - name: Upload debug artifacts
+      if: env.IS_RELASE == '1'
       uses: actions/upload-artifact@v3
       with:
         name: debug-files
