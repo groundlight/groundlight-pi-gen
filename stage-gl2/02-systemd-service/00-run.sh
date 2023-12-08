@@ -1,15 +1,11 @@
-#!/bin/bash
+#!/bin/bash -e
 
-set -ex
+GL_DIR="${ROOTFS_DIR}/opt/groundlight"
+mkdir -p "${GL_DIR}/systemd"
 
-mkdir -p "${ROOTFS_DIR}/opt/groundlight/systemd"
-cp files/* "${ROOTFS_DIR}/opt/groundlight/systemd"
-
-# rm first because layer caching
-rm -f "${ROOTFS_DIR}/etc/systemd/system/groundlight-mns"
-cp "${ROOTFS_DIR}/opt/groundlight/systemd/groundlight-mns.service" "${ROOTFS_DIR}/etc/systemd/system/"
-
-log "$(cat ${ROOTFS_DIR}/etc/systemd/system/groundlight-mns.service)"
+install -v  files/service-up.sh             "${GL_DIR}/systemd/"
+install -v  files/service-down.sh           "${GL_DIR}/systemd/"
+install -v  files/groundlight-mns.service   "${ROOTFS_DIR}/etc/systemd/system/"
 
 on_chroot << EOF
 systemctl enable groundlight-mns
