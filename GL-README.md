@@ -3,7 +3,7 @@
 This repo builds OS images for Groundlight tools and applications, including the bare python SDK, 
 and the Monitoring Notification Server (MNS).  The OS images are available in the [releases](https://github.com/groundlight/groundlight-pi-gen/releases) and can be installed with [Raspberry Pi imager](https://www.raspberrypi.com/software/).
 
-There are several different images available, depending on your needs:
+There are several different images available, depending on your needs, from smallest to largest:
 
 - **`sdk`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
 - **`mns`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means as server, without a GUI.  The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
@@ -14,7 +14,7 @@ appropriate.
 
 ## Source Code
 
-This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`glmns-config`)[glmns-config] file is the key source of control.  (What is called "config" in the original.)
+This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`gl-config`)[gl-config] file is the key source of control.  (What is called "config" in the original.)
 
 Note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
 
@@ -22,7 +22,7 @@ Note that we're tracking the `arm64` branch, not main.  (If we build off the mai
 ## Building Images
 
 You should really build this on an ARM system (e.g. an m7g instance in ec2).  
-You _can_ build this on an x86 instance, but it will take ~3x longer, and it's not fast to start with.
+You _can_ build this on an x86 instance, but it will take significantly longer, and it's not fast to start with.
 
 ### Building directly
 
@@ -56,7 +56,7 @@ To start over try
 
 After ~10 minutes, and then look in the `deploy/` for a file with a name like
 `image_2023-12-06-GroundlightMNS-sdk-qemu.img.xz` which will be ~1GB for now.
-(See the `COMPRESSION_LEVEL` setting in (`glmns-config`)[glmns-config] to trade speed vs size.)
+(See the `COMPRESSION_LEVEL` setting in (`gl-config`)[gl-config] to trade speed vs size.)
 
 Copy this to your laptop, and then you can burn it to an SD card using the [Raspberry Pi Image](https://github.com/raspberrypi/rpi-imager).
 

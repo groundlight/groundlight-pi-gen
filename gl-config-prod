@@ -1,4 +1,4 @@
-source glmns-config
+source gl-config
 
 # Higher compression takes longer, so it's turned down during dev.
 # We should turn it back up when we're ready to publish.
