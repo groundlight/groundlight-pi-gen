@@ -1,5 +1,8 @@
 source gl-config
 
+# Turn off QEMU for release builds
+USE_QEMU=0
+
 # Higher compression takes longer, so it's turned down during dev.
 # We should turn it back up when we're ready to publish.
 # For reference, with a 3.3GB base .img file 

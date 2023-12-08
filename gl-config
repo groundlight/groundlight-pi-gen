@@ -20,7 +20,7 @@ STAGE_LIST="stage0 stage1 stage2 stage-gl1"
 
 #
 # Options used for development.
-# (These get overridden by gl-config-prod)
+# (These get overridden by gl-config-release)
 #
 
 # Makes a qemu-compatible image - for easier testing.

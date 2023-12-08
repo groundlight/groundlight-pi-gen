@@ -1,0 +1,62 @@
+name: build-images
+
+on:
+  push:
+    branches: [ main ]
+    tags: 
+      - '*'
+  pull_request:
+    # all branches for now while we're testing.
+    #branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: install needed packages
+      run: |
+        sudo apt update
+        sudo apt install binfmt-support
+        sudo apt install qemu qemu-user-static
+        sudo update-binfmts --enable
+
+    # Build image with docker
+    - name: Build the full image
+      run: ./build-docker.sh -c gl-config-release
+
+    # Print output directory files
+    - name: List output files
+      run: ls -lh deploy
+
+    - name: Upload built image
+      uses: actions/upload-artifact@v3
+      with:
+        name: rpios-image
+        path: ./deploy/image_*.img.xz
+        if-no-files-found: error
+
+    - name: Upload debug artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-files
+        path: | 
+          ./deploy/*.info
+          ./deploy/build.log
+        if-no-files-found: error
+  
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpios-image
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: '**/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
