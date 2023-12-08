@@ -8,6 +8,7 @@ The MNS provides a simple GUI to configure a Groundlight detector, grab images f
 appropriate.
 
 This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`glmns-config`)[glmns-config] file is the key source of control.  (What is called "config" in the original.)
+Also note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
 
 
 ## Building Images
@@ -23,19 +24,14 @@ On the appropriate machine, run:
 ./dobuild.sh
 ```
 
-### Building in Docker
+This has code for both 
+- **local builds** which are faster, but require sudo, and maybe leak resources in a way that require rebooting the build machine.
+- **docker builds** which are slower, but don't require sudo, and don't leak resources.
 
-If you're not crazy about running this big script as root, you can use:
-
-```
-time ./build-docker.sh -c glmns-config
-```
-
-It's slower (how much?), but still manages to cache previous runs.  The second time you run it
-to re-use the cache, you should do:
+To re-use the cache from docker builds, run
 
 ```
-time CONTINUE=1 ./build-docker.sh -c glmns-config
+CONTINUE=1 ./dobuild.sh
 ```
 
 ### Troubleshooting
@@ -56,7 +52,11 @@ After ~10 minutes, and then look in the `deploy/` for a file with a name like
 
 Copy this to your laptop, and then you can burn it to an SD card using the [Raspberry Pi Image](https://github.com/raspberrypi/rpi-imager).
 
+TODO: figure out how to use them inside `qemu`.
+TODO: set up some tests inside `qemu` that things are working.
+TODO: write those tests into CI/CD actions.
+
 
 ## What's up with this file?
 
-This file is called `GL-README.md` and is elevated to the homepage by a symlink `.github/README.md`
+This file is called `GL-README.md` and is elevated to the github repo homepage by a symlink `.github/README.md`.

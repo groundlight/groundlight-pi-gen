@@ -38,6 +38,12 @@ do
 	esac
 done
 
+# check that CONFIG_FILE exists and is readable
+if [ ! -r "${CONFIG_FILE}" ]; then
+  echo "Configuration file '${CONFIG_FILE}' does not exist or is not readable"
+  exit 1
+fi
+
 # Ensure that the configuration file is an absolute path
 if test -x /usr/bin/realpath; then
 	CONFIG_FILE=$(realpath -s "$CONFIG_FILE" || realpath "$CONFIG_FILE")
