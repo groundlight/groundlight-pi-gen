@@ -1,0 +1,14 @@
+[Unit]
+Description=Groundlight Monitoring Notification Server
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+ExecStart=/opt/groundlight/systemd/service-up.sh
+ExecStop=/opt/groundlight/systemd/service-down.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
