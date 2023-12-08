@@ -1,14 +1,22 @@
-# Groundlight' Monitoring Notification Server (MNS) as a Raspberry Pi Appliance
+# Groundlight Pi-Gen: OS images for Raspberry PI with Groundlight Tools
 
-This repo builds the OS image for a Groundlight MNS appliance running on Raspberry Pi hardware.
+This repo builds OS images for Groundlight tools and applications, including the bare python SDK, 
+and the Monitoring Notification Server (MNS).  The OS images are available in the [releases](https://github.com/groundlight/groundlight-pi-gen/releases) and can be installed with [Raspberry Pi imager](https://www.raspberrypi.com/software/).
 
-Use this repo to build the `.img` file which gets burned to an SD card.  When that SD card is booted on the Raspberry Pi, 
-it runs the [Groundlight Monitoring Notification Server](https://github.com/groundlight/monitoring-notification-server).
-The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
+There are several different images available, depending on your needs:
+
+- **`sdk`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
+- **`mns`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means as server, without a GUI.  The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
 appropriate.
+- **`full`** - an image with the Groundlight MNS installed, and a GUI enabled.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
+- **`edge`** - Not available yet.  The Edge Endpoint server is still too resource hungry to run on a Raspberry Pi.  Please [leave a comment](https://github.com/groundlight/groundlight-pi-gen/issues/5) if you'd like to use this.
+
+
+## Source Code
 
 This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`glmns-config`)[glmns-config] file is the key source of control.  (What is called "config" in the original.)
-Also note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
+
+Note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
 
 
 ## Building Images
