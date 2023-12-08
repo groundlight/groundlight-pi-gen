@@ -30,6 +30,9 @@ USE_QEMU=1
 # faster but "experimental" and crashed when I tried it.
 #USE_QCOW2=1
 
-# Dev settings - don't compress.  It's really quite slow.
-DEPLOY_COMPRESSION=none
-COMPRESSION_LEVEL=0
+# Dev settings - compressing is quite slow unless you have lots of cores. (xz parallelizes nicely)
+# But big images are slow to download.
+DEPLOY_COMPRESSION=xz
+COMPRESSION_LEVEL=1
+#DEPLOY_COMPRESSION=none
+#COMPRESSION_LEVEL=0

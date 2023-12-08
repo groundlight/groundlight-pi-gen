@@ -4,4 +4,4 @@
 # time sudo $@ ./build.sh -c glmns-config
 
 # docker build - slower but more reliable.
-time $@ ./build-docker.sh -c glmns-config
+time PRESERVE_CONTAINER=1 $@ ./build-docker.sh -c glmns-config
