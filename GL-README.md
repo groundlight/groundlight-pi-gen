@@ -34,6 +34,22 @@ To re-use the cache from docker builds, run
 CONTINUE=1 ./dobuild.sh
 ```
 
+### But it's so SLOW!
+
+A full build can take 10s of minutes.  But partial builds get cached in a docker volume and will speed things up dramatically.  But beware that the caches don't get invalidated automatically or sensibly, so it will lead to problems as you're working on it.
+
+Also, the best way to speed things up is to skip building stages you don't care about (e.g. `stage3` the desktop environment).  You can do this without editing the `glmns-config` file with:
+
+```
+touch stage3/SKIP
+```
+
+Also, you can get a bit of a boost by skipping export of the `sdk` variant image:
+
+```
+touch stage-gl1/SKIP_IMAGES
+```
+
 ### Troubleshooting
 
 To start over try
