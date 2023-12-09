@@ -47,7 +47,7 @@ jobs:
       run: ls -lh deploy
 
     - name: Upload built image
-      if: env.IS_RELASE == '1'
+      if: env.IS_RELEASE == '1'
       uses: actions/upload-artifact@v3
       with:
         name: rpios-image
@@ -55,7 +55,7 @@ jobs:
         if-no-files-found: error
 
     - name: Upload debug artifacts
-      if: env.IS_RELASE == '1'
+      if: env.IS_RELEASE == '1'
       uses: actions/upload-artifact@v3
       with:
         name: debug-files

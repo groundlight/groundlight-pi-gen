@@ -6,9 +6,8 @@ and the Monitoring Notification Server (MNS).  The OS images are available in th
 There are several different images available, depending on your needs, from smallest to largest:
 
 - **`sdk`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
-- **`mns`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means as server, without a GUI.  The MNS provides a simple GUI to configure a Groundlight detector, grab images from it, and send notifications when
-appropriate.
-- **`full`** - an image with the Groundlight MNS installed, and a GUI enabled.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
+- **`mns`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means it runs the server, which serves HTML pages, but has no browser or GUI to use it from.  You need to connect from another machine to use MNS.  The MNS provides a simple way to configure cameras, Groundlight detectors, and send notifications conditions are met.
+- **`full`** - an image with the Groundlight MNS installed, and a desktop GUI with a browser.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
 - **`edge`** - Not available yet.  The Edge Endpoint server is still too resource hungry to run on a Raspberry Pi.  Please [leave a comment](https://github.com/groundlight/groundlight-pi-gen/issues/5) if you'd like to use this.
 
 
