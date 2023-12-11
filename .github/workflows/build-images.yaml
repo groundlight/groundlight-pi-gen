@@ -34,13 +34,7 @@ jobs:
     # Build image with docker
     - name: Build the full images
       run: |
-        if [[ ${IS_RELEASE} == "1" ]]; then
-          # Do a release build.
-          ./build-docker.sh -c gl-config-release
-        else
-          # faster test build.
-          ./build-docker.sh -c gl-config
-        fi
+      ./dobuild.sh
 
     # Print output directory files
     - name: List output files
@@ -51,7 +45,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: rpios-image
-        path: ./deploy/image_*.img.xz
+        path: ./deploy/GroundlightPi-*.img.xz
         if-no-files-found: error
 
     - name: Upload debug artifacts

@@ -1,6 +1,6 @@
 # The config file defining the Groundlight MNS image.
-IMG_NAME='GroundlightMNS'
-TARGET_HOSTNAME=GroundlightMNS
+IMG_NAME='GroundlightPi'
+TARGET_HOSTNAME=GroundlightPi
 FIRST_USER_NAME=groundlight
 
 #
