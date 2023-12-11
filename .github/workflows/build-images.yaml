@@ -31,10 +31,9 @@ jobs:
           echo "IS_RELEASE=0" >> $GITHUB_ENV
         fi
 
-    # Build image with docker
     - name: Build the full images
       run: |
-      ./dobuild.sh
+        ./dobuild.sh
 
     # Print output directory files
     - name: List output files

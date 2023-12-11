@@ -36,7 +36,7 @@ if [ "$IS_RELEASE" = "1" ]; then
         filename=$(basename -- "$file")
 
         # Files are named like image_2023-12-10-GroundlightPi-sdk.img.xz
-        # Figure out the variant name by removing the image_date- predfix
+        # Figure out the variant name by removing the image_date- prefix
         variant=$(echo $filename | cut -d '-' -f5-)
         # check that $variant is not empty, and does not include "Groundlight"
         if [ -z "$variant" ] || [[ "$variant" == *"Groundlight"* ]]; then
@@ -49,5 +49,4 @@ if [ "$IS_RELEASE" = "1" ]; then
         echo "Renaming $file to $new_file"
         mv "$file" "$new_file"
     done
-
 fi
