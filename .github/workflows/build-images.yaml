@@ -1,0 +1,72 @@
+name: build-images
+
+on:
+  push:
+    branches: [ main ]
+    tags: 
+      - '*'
+  pull_request:
+    # all branches for now while we're testing.
+    #branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: install needed packages
+      run: |
+        sudo apt update
+        sudo apt install binfmt-support
+        sudo apt install qemu qemu-user-static
+        sudo update-binfmts --enable
+
+    - name: Detect if release
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "IS_RELEASE=1" >> $GITHUB_ENV
+        else
+          echo "IS_RELEASE=0" >> $GITHUB_ENV
+        fi
+
+    - name: Build the full images
+      run: |
+        ./dobuild.sh
+
+    # Print output directory files
+    - name: List output files
+      run: ls -lh deploy
+
+    - name: Upload built image
+      if: env.IS_RELEASE == '1'
+      uses: actions/upload-artifact@v3
+      with:
+        name: rpios-image
+        path: ./deploy/GroundlightPi-*.img.xz
+        if-no-files-found: error
+
+    - name: Upload debug artifacts
+      if: env.IS_RELEASE == '1'
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-files
+        path: | 
+          ./deploy/*.info
+          ./deploy/build.log
+        if-no-files-found: error
+  
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpios-image
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: '**/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

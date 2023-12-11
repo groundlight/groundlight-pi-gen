@@ -1,7 +1,7 @@
 # The config file defining the Groundlight MNS image.
-IMG_NAME='GroundlightMNS'
-TARGET_HOSTNAME=GroundlightMNS
-FIRST_USER_NAME=glmns
+IMG_NAME='GroundlightPi'
+TARGET_HOSTNAME=GroundlightPi
+FIRST_USER_NAME=groundlight
 
 #
 # core functionality
@@ -17,14 +17,14 @@ RELEASE=bookworm
 # stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
 # stage-gl2 adds the MNS running in docker
 # stage3 adds basic desktop stuff
-STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2 stage3"
+STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2"
 
 #
 # Options used for development.
-# (These get overridden by glmns-config-prod)
+# (These get overridden by gl-config-release)
 #
 
-# Makes a qemu-compatible image - for easier testing.
+# Makes a qemu-compatible image - this will help testing when we figure it out.
 USE_QEMU=1
 
 # faster but "experimental" and crashed when I tried it.
