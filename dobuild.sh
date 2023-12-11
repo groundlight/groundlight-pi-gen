@@ -5,6 +5,8 @@
 # Instead we'll use docker build, which is slower but more reliable.
 # docker build - slower but more reliable.
 
+set -e  # exit on error
+
 # check if the IS_RELEASE variable is set to "1"
 if [ "$IS_RELEASE" = "1" ]; then
     echo "Building release version"
