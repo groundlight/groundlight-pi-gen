@@ -16,8 +16,9 @@ RELEASE=bookworm
 # stage2 gets us a working "lite" headless distribution w/o desktop
 # stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
 # stage-gl2 adds the MNS running in docker
-# stage3 adds basic desktop stuff
-STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2"
+# stage3 adds basic desktop infra
+# stage4 makes the desktop usable
+STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2 stage3 stage4"
 
 #
 # Options used for development.
