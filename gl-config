@@ -17,7 +17,7 @@ RELEASE=bookworm
 # stage-gl1 adds the python SDK and supporting libraries like numpy, opencv, framegrab
 # stage-gl2 adds the MNS running in docker
 # stage3 adds basic desktop infra
-# stage4 makes the desktop usable
+# stage4 makes the desktop usable with apps and such
 STAGE_LIST="stage0 stage1 stage2 stage-gl1 stage-gl2 stage3 stage4"
 
 #
