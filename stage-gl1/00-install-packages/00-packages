@@ -1,11 +1,11 @@
 # Absolute basics
-python3 python3-pip
+python3 python-is-python3
 
-# Install python libraries
-# (We'd rather install this stuff with pip or poetry, but pip struggles inside chroot for anything
-# complicated.  So for now this works.)
-python3-opencv python3-numpy
-python3-pydantic python3-pil python3-yaml
+# don't install python3-pip or any libraries here, because pip and apt don't 
+# get along, and most people prefer pip
 
-# Nice-to-have utilities
+# We'll set up a venv to get around this.
+python3-venv
+
+# Some nice-to-have utilities
 iotop nethogs net-tools telnet
