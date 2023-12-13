@@ -1,11 +1,15 @@
 # Absolute basics
 python3 python-is-python3
 
-# don't install python3-pip or any libraries here, because pip and apt don't 
-# get along, and most people prefer pip
+# we don't install things like python3-pip or many libraries here, because pip and apt don't 
+# get along, so we'll set up a venv later.
 
 # We'll set up a venv to get around this.
 python3-venv
 
+# We do install OS's opencv to make sure all the .so files are available.
+python3-opencv
+
 # Some nice-to-have utilities
 iotop nethogs net-tools telnet
+git curl wget
