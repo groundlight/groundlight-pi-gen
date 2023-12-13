@@ -20,8 +20,7 @@ Note that we're tracking the `arm64` branch, not main.  (If we build off the mai
 
 ## Building Images
 
-You should really build this on an ARM system (e.g. an m7g instance in ec2).  
-You _can_ build this on an x86 instance, but it will take significantly longer, and it's not fast to start with.
+We recommend building on an ARM machine (like an m7g instance in ec2).  You can build on an x86 machine, but it will take significantly longer, and it's not fast to start with.  Building on ARM-powered Macs seems like a good idea, and "should" work, but isn't tested.
 
 ### Building directly
 
