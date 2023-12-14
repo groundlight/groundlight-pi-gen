@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Note: Avoid usage of arrays as MacOS users have an older version of bash (v3.x) which does not supports arrays
+# Note: Avoid usage of arrays as MacOS users have an older version of bash (v3.x) which does not support arrays
 set -eu
 
 DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
