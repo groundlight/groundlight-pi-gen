@@ -43,7 +43,7 @@ if [ "$IS_RELEASE" = "1" ]; then
             echo "Failed to parse filename $filename - got $variant"
             exit 1
         fi
-        new_file="GroundlightPi-$TAG_NAME-$variant.img.xz"
+        new_file="GroundlightPi-$TAG_NAME-$variant"
 
         # Rename the file
         echo "Renaming $file to $new_file"
