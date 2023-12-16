@@ -3,10 +3,16 @@
 
 set -e 
 
+
+cd "$(dirname "$0")"
+
+
 ARCH=arm64
 ROOT_DIR=/home/ubuntu
 NUM_CORES=${NUM_CORES:-$(nproc)}
 IMAGE_FILE=""
+KERNEL_VERSION="linux-6.1.34"
+
 
 # First step: Install the required packages. These include cross-compilers for arm64
 # and required packages for QEMU itself. 
@@ -28,9 +34,19 @@ sudo apt install \
 # Second step: Build the Linux kernel for qemu arm64 
 # The kernel can be downloaded from https://www.kernel.org/
 # tar xvJf means: -x: extract, -v: verbose, -J: use the xz compression, -f: specify archive name
-wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.1.34.tar.xz
-tar xvJf linux-6.1.34.tar.xz 
-cd linux-6.1.34
+if [ -d "$KERNEL_VERSION" ]; then
+    echo "Directory $KERNEL_VERSION already exists, skipping download and extraction."
+else
+    # Downloading the kernel source
+    echo "Downloading Linux kernel version $KERNEL_VERSION..."
+    wget "https://cdn.kernel.org/pub/linux/kernel/v6.x/${KERNEL_VERSION}.tar.xz"
+
+    # Extracting the kernel source
+    echo "Extracting ${KERNEL_VERSION}.tar.xz..."
+    tar xvJf "${KERNEL_VERSION}.tar.xz"
+fi
+
+cd "$KERNEL_VERSION"
 
 # Create a .config file: This requires having flex and bison packages installed: 
 # Flex (Fast Lexial Analyzer Generator) is used for tokenizing input (breaking it into a series of tokens)
@@ -47,10 +63,23 @@ ARCH=arm64 CROSS_COMPILE=/bin/aarch64-linux-gnu- make -j${NUM_CORES}
 cp arch/${ARCH}/boot/Image ${ROOT_DIR}
 
 
-# Third step: Mount the image for enabling SSH and configuring username and password 
+# Third step: Mount the image for enabling SSH and configuring username and password and 
+# accessing the files within the image. 
+# Disk images, like those used for Raspberry Pi (e.g., RaspiOS), often contain an entire 
+# disk's worth of data, including the partition table and multiple partitions. 
+# To mount a specific partition within this image, we must calculate the correct offset where 
+# the partition starts. This calculation requires two pieces of information:
+# * sector size 
+# * starting offset 
+# For instance, if a partition starts at sector 8192 and the sector size is 512 bytes, the byte
+# offset of the partition is 8192 * 512 bytes from the start of the image.
+#
+# We have two partitions inside the generated Raspberry Pi image. The first device (partition)
+# is the bootable partition, and the second one is the root filesystem. The first partition is 
+# what will be mounted as /boot in Raspberry Pi, and this is where we'll need to create some files.
 
 
-while getopts "i:" flag; do 
+while getopts "i:" flag
 do 
     case "${flag}" in 
         i)
@@ -68,9 +97,9 @@ function assert_numeric() {
     fi
 }
 
-# Check that the image exists 
-if [ ! -f "${IMAGE_FILE}" ]; then 
-    echo "Invalid Raspberry Pi OS image: '${IMAGE_FILE}'"
+# Check that the image exists. The image path is expected to be absolute. 
+if [ ! -f "$IMAGE_FILE" ]; then 
+    echo "Invalid Raspberry Pi OS image: '$IMAGE_FILE'"
     exit 1
 fi 
 
@@ -87,25 +116,32 @@ assert_numeric $START_SECTOR
 # Calculating the offset
 OFFSET=$(echo "$SECTOR_SIZE * $START_SECTOR" | bc)
 
-
 echo "Sector Size: $SECTOR_SIZE"
 echo "Start Sector: $START_SECTOR"
 echo "Offset: $OFFSET"
-        
 
 
-sudo qemu-img resize \
-        /home/ubuntu/groundlight-pi-gen/deploy/image_2023-12-14-GroundlightPi-sdk-qemu.img 4G
+# Mount the image in /mnt/rpi directory 
+sudo mkdir -p /mnt/rpi 
+sudo mount -o loop,offset=${OFFSET} ${IMAGE_FILE} /mnt/rpi
 
-# sudo qemu-system-arm \
-#     -M raspi2b \ 
-#     -m 1G \
-#     -drive file=/home/ubuntu/groundlight-pi-gen/deploy/image_2023-12-14-GroundlightPi-sdk-qemu.img,format=raw \
-#     -net nic -net user \
-#     -display none \
-#     -serial stdio
+# Create a file named ssh to enable `ssh``. Then, create a file named `userconf.txt` in the same 
+# directory and put the username and password there like <username>:<password>. This will be 
+# used as the default login credentials. We can configure the password and username to be more 
+# robust, but for now we will just use <pi>:<groundlight>. 
+cd /mnt/rpi 
+sudo touch ssh 
 
-qemu-system-aarch64 \
+# Generate a hashed password
+echo 'pi:groundlight' | sudo tee userconf.txt 
+sudo umount /mnt/rpi 
+
+# Fourth step: Run the QEMU emulator
+# We need to resize the image to 4GB first (just for the SDK image--should be configurable later)
+# since the virtualizer does not accept raw images whose sizes are not powers of 2. 
+cd ${ROOT_DIR}
+sudo qemu-img resize "$IMAGE_FILE" 4G
+sudo qemu-system-aarch64 \
         -machine virt \
         -cpu cortex-a72 \
         -smp 6 \
@@ -118,14 +154,3 @@ qemu-system-aarch64 \
         -device virtio-net-pci,netdev=mynet \
         -monitor telnet:127.0.0.1:5555,server,nowait \
         -nographic 
-
-
-
-# Remember to add a step to add bison and flex 
-# sudo apt-get install flex bison libssl-dev 
-
-# IP address is 10.0.2.15 
-
-# [FAILED] Failed to start rpi-eeprom…k for Raspberry Pi EEPROM updates.
-# See 'systemctl status rpi-eeprom-update.service' for details.
-# [  OK  ] Started avahi-daemon.service - Avahi mDNS/DNS-SD Stack.
