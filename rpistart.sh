@@ -123,24 +123,49 @@ echo "Offset: $OFFSET"
 
 # Mount the image in /mnt/rpi directory 
 sudo mkdir -p /mnt/rpi 
-sudo mount -o loop,offset=${OFFSET} ${IMAGE_FILE} /mnt/rpi
+if findmnt -M /mnt/rpi > /dev/null; then
+    echo "/mnt/rpi is already mounted."
+else
+    sudo mount -o loop,offset=${OFFSET} ${IMAGE_FILE} /mnt/rpi
+fi
 
-# Create a file named ssh to enable `ssh``. Then, create a file named `userconf.txt` in the same 
-# directory and put the username and password there like <username>:<password>. This will be 
-# used as the default login credentials. We can configure the password and username to be more 
-# robust, but for now we will just use <pi>:<groundlight>. 
-cd /mnt/rpi 
-sudo touch ssh 
+USERNAME=${USERNAME:-"pi"}
+PASSWORD=${PASSWORD:-"raspberry"}
 
-# Generate a hashed password
-echo 'pi:groundlight' | sudo tee userconf.txt 
+
+# Create an 'ssh' file and 'userconf.txt' in the mounted directory. We will put the 
+# username and password in 'userconf.txt', which will be used as the default login
+# credentials. 
+if [ -d "/mnt/rpi" ]; then
+    cd /mnt/rpi
+    sudo touch ssh
+    sudo rm -f userconf.txt > /dev/null
+    HASHED_PASSWORD=$(openssl passwd -6 "${PASSWORD}")
+    echo "${USERNAME}:${HASHED_PASSWORD}" | sudo tee userconf.txt > /dev/null
+fi
+
+cd $ROOT_DIR
 sudo umount /mnt/rpi 
 
 # Fourth step: Run the QEMU emulator
 # We need to resize the image to 4GB first (just for the SDK image--should be configurable later)
 # since the virtualizer does not accept raw images whose sizes are not powers of 2. 
-cd ${ROOT_DIR}
 sudo qemu-img resize "$IMAGE_FILE" 4G
+
+# - kernel: This is the path to the QEMU kernel downloaded in step 2
+# - append: Providing the boot arguments directly to the kernel, telling it where to find the 
+#           root filesystem and what type it is. 
+# - cpu/m: This sets the CPU type and RAM to match a Raspberry Pi
+# - machine: This sets the machine we are emulating. `virt` refers to a generic, virtualized 
+#           machine type provided by QEMU
+# - smp: Specifies the number of CPU cores
+# - drive: Defines a drive with the given parameters. 
+# - device: Attaches the drive to the VM using a VirtIO block device. bootindex=0 means it will 
+#          be the first boot device. 
+# - netdev: Sets up a user-mode network backend with ID mynet. It also sets up SSH (forwarding
+#          TCP connections from host port 2222 to guest port 22).
+# - monitor: Opens a QEMU monitor console accessible via Telnet on port 5555. The VM will not
+#          wait for a monitor connection before starting. 
 sudo qemu-system-aarch64 \
         -machine virt \
         -cpu cortex-a72 \
