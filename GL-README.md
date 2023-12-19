@@ -5,8 +5,8 @@ and the Monitoring Notification Server (MNS).  The OS images are available in th
 
 There are several different images available, depending on your needs, from smallest to largest:
 
-- **`sdk`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
-- **`mns`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means it runs the server, which serves HTML pages, but has no browser or GUI to use it from.  You need to connect from another machine to use MNS.  The MNS provides a simple way to configure cameras, Groundlight detectors, and send notifications conditions are met.
+- **`sdk-only`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
+- **`mns-headless`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means it runs the server, which serves HTML pages, but has no browser or GUI to use it from.  You need to connect from another machine to use MNS.  The MNS provides a simple way to configure cameras, Groundlight detectors, and send notifications conditions are met.
 - **`full`** - an image with the Groundlight MNS installed, and a desktop GUI with a browser.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
 - **`edge`** - Not available yet.  The Edge Endpoint server is still too resource hungry to run on a Raspberry Pi.  Please [leave a comment](https://github.com/groundlight/groundlight-pi-gen/issues/5) if you'd like to use this.
 
@@ -39,6 +39,23 @@ To re-use the cache from docker builds, run
 ```
 CONTINUE=1 ./dobuild.sh
 ```
+
+### But it's so SLOW!
+
+A full build can take 10s of minutes. But partial builds get cached in a docker volume and will speed things up dramatically. Beware that the caches don't get invalidated automatically or sensibly, so it will lead to problems as you're working on it.
+
+Also, the best way to speed things up is to skip building stages you don't care about (e.g. `stage3` the desktop environment).  You can do this without editing the `glmns-config` file with:
+
+```
+touch stage3/SKIP
+```
+
+Also, you can get a bit of a boost by skipping export of the `sdk` variant image:
+
+```
+touch stage-gl1/SKIP_IMAGES
+```
+
 
 ### Troubleshooting
 
