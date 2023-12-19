@@ -58,7 +58,7 @@ ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make defconfig
 ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make kvm_guest.config
 
 # Build the kernel (parallelizable if nproc > 1)
-ARCH=arm64 CROSS_COMPILE=/bin/aarch64-linux-gnu- make -j${NUM_CORES}
+ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make -j${NUM_CORES}
 
 cp arch/${ARCH}/boot/Image ${ROOT_DIR}
 
@@ -92,7 +92,7 @@ done
 
 function assert_numeric() {
     if ! [[ $1 =~ ^[0-9]+$ ]] || ! [[ $1 =~ ^[0-9]+$ ]]; then
-        echo "Error: Non-numeric value detected."
+        echo "Error: Non-numeric value detected: $1"
         exit 1
     fi
 }
@@ -173,7 +173,7 @@ sudo qemu-system-aarch64 \
         -m 4G \
         -kernel Image \
         -append "root=/dev/vda2 rootfstype=ext4 rw panic=0 console=ttyAMA0" \
-        -drive format=raw,file=/home/ubuntu/groundlight-pi-gen/deploy/image_2023-12-14-GroundlightPi-sdk-qemu.img,if=none,id=hd0,cache=writeback \
+        -drive format=raw,file=$IMAGE_FILE,if=none,id=hd0,cache=writeback \
         -device virtio-blk,drive=hd0,bootindex=0 \
         -netdev user,id=mynet,hostfwd=tcp::2222-:22 \
         -device virtio-net-pci,netdev=mynet \
