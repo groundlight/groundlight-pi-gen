@@ -1,28 +1,26 @@
 #!/bin/bash 
 
 
-set -e 
+set -ex 
 
 
 cd "$(dirname "$0")"
 
 
 ARCH=arm64
-ROOT_DIR=/home/ubuntu
+ROOT_DIR=$HOME 
 NUM_CORES=${NUM_CORES:-$(nproc)}
 IMAGE_FILE=""
 KERNEL_VERSION="linux-6.1.34"
 
 
-# First step: Install the required packages. These include cross-compilers for arm64
+# Install the required packages. These include cross-compilers for arm64
 # and required packages for QEMU itself. 
-# NOTE: We probably don't need to install `qemu-system-gui`
 sudo apt install -y \
         gcc-aarch64-linux-gnu \
         g++-aarch64-linux-gnu \
         qemu \
         qemubuilder \
-        qemu-system-gui \
         qemu-system-arm \
         qemu-utils \
         qemu-system-data \
@@ -31,7 +29,7 @@ sudo apt install -y \
         bison \
         libssl-dev 
 
-# Second step: Build the Linux kernel for qemu arm64 
+# Build the Linux kernel for qemu arm64 
 # The kernel can be downloaded from https://www.kernel.org/
 # tar xvJf means: -x: extract, -v: verbose, -J: use the xz compression, -f: specify archive name
 if [ -d "$KERNEL_VERSION" ]; then

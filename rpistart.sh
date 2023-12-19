@@ -1,82 +1,36 @@
 #!/bin/bash 
 
 
-set -e 
+
+# This script will assume that you've already built the linux kernel for QEMU and copied 
+# the kernel to the root directory. In addition, it will assume that you've already generated 
+# the Raspberry Pi OS image and decompressed it. 
+# To use this script, run the following command 
+# 
+# $ ./rpistart.sh -i <img-file-path>
+# 
+# <img-file-path> needs to be an absolute path: 
+# Ex. /home/ubuntu/groundlight-pi-gen/deploy/image_2023-12-19-GroundlightPi-desktop-qemu.img
+# 
+# If you don't want to use the default login credentials (username=pi, password=raspberry), you
+# can set the USERNAME and PASSWORD as environment variables before running this script.
+# 
+# $ export USERNAME=<username>
+# $ export PASSWORD=<password>
+# $ ./rpistart.sh -i <img-file-path>
+# 
+
+
+set -ex 
 
 
 cd "$(dirname "$0")"
 
-
-ARCH=arm64
-ROOT_DIR=/home/ubuntu
-NUM_CORES=${NUM_CORES:-$(nproc)}
+ROOT_DIR=$HOME
 IMAGE_FILE=""
-KERNEL_VERSION="linux-6.1.34"
+KERNEL_IMAGE=$ROOT_DIR/Image
+NUM_RPI_CPU_CORES=4
 
-
-# First step: Install the required packages. These include cross-compilers for arm64
-# and required packages for QEMU itself. 
-# NOTE: We probably don't need to install `qemu-system-gui`
-sudo apt install \
-        gcc-aarch64-linux-gnu \
-        g++-aarch64-linux-gnu \
-        qemu \
-        qemubuilder \
-        qemu-system-gui \
-        qemu-system-arm \
-        qemu-utils \
-        qemu-system-data \
-        qemu-system \
-        flex \
-        bison \
-        libssl-dev 
-
-# Second step: Build the Linux kernel for qemu arm64 
-# The kernel can be downloaded from https://www.kernel.org/
-# tar xvJf means: -x: extract, -v: verbose, -J: use the xz compression, -f: specify archive name
-if [ -d "$KERNEL_VERSION" ]; then
-    echo "Directory $KERNEL_VERSION already exists, skipping download and extraction."
-else
-    # Downloading the kernel source
-    echo "Downloading Linux kernel version $KERNEL_VERSION..."
-    wget "https://cdn.kernel.org/pub/linux/kernel/v6.x/${KERNEL_VERSION}.tar.xz"
-
-    # Extracting the kernel source
-    echo "Extracting ${KERNEL_VERSION}.tar.xz..."
-    tar xvJf "${KERNEL_VERSION}.tar.xz"
-fi
-
-cd "$KERNEL_VERSION"
-
-# Create a .config file: This requires having flex and bison packages installed: 
-# Flex (Fast Lexial Analyzer Generator) is used for tokenizing input (breaking it into a series of tokens)
-# and Bison takes these tokens and analyzes their structure to understand the higher-level syntax. 
-
-ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make defconfig
-
-# Use the kvm_guest (kernel virtual machine) config as the base defconfig, which is suitable for qemu 
-ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make kvm_guest.config
-
-# Build the kernel (parallelizable if nproc > 1)
-ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make -j${NUM_CORES}
-
-cp arch/${ARCH}/boot/Image ${ROOT_DIR}
-
-
-# Third step: Mount the image for enabling SSH and configuring username and password and 
-# accessing the files within the image. 
-# Disk images, like those used for Raspberry Pi (e.g., RaspiOS), often contain an entire 
-# disk's worth of data, including the partition table and multiple partitions. 
-# To mount a specific partition within this image, we must calculate the correct offset where 
-# the partition starts. This calculation requires two pieces of information:
-# * sector size 
-# * starting offset 
-# For instance, if a partition starts at sector 8192 and the sector size is 512 bytes, the byte
-# offset of the partition is 8192 * 512 bytes from the start of the image.
-#
-# We have two partitions inside the generated Raspberry Pi image. The first device (partition)
-# is the bootable partition, and the second one is the root filesystem. The first partition is 
-# what will be mounted as /boot in Raspberry Pi, and this is where we'll need to create some files.
 
 
 while getopts "i:" flag
@@ -97,12 +51,37 @@ function assert_numeric() {
     fi
 }
 
-# Check that the image exists. The image path is expected to be absolute. 
+# Check that the provided path exists, is absolute and ends with "qemu.img"
 if [ ! -f "$IMAGE_FILE" ]; then 
     echo "Invalid Raspberry Pi OS image: '$IMAGE_FILE'"
     exit 1
+elif [[ "$IMAGE_FILE" != /* ]]; then 
+    echo "The image path is not absolute: '$IMAGE_FILE'"
+elif [[ "$IMAGE_FILE" != *qemu.img ]]; then
+    echo "The image does not have the expected 'qemu.img' suffix: '$IMAGE_FILE'"
+    echo "You probably forgot to decompress the image by running 'xz -d <*.img.xz>'"
+    exit 1
 fi 
 
+
+# Validate that the QEMU kernel image path
+if [ ! -f "$KERNEL_IMAGE" ]; then 
+    echo "Invalid path for the Linux kernel for QEMU: '$KERNEL_IMAGE'. Make sure to run './setup-qemu-kernel.sh' first."
+    exit 1 
+fi 
+
+# Mount the image for enabling SSH and configuring username and password and 
+# accessing the files within the image. 
+# To mount a specific partition within this image, we must calculate the correct offset where 
+# the partition starts. This calculation requires two pieces of information:
+# * sector size 
+# * starting offset 
+# For instance, if a partition starts at sector 8192 and the sector size is 512 bytes, the byte
+# offset of the partition is 8192 * 512 bytes from the start of the image.
+#
+# We have two partitions inside the generated Raspberry Pi image. The first device (partition)
+# is the bootable partition, and the second one is the root filesystem. The first partition is 
+# what will be mounted as /boot in Raspberry Pi, and this is where we'll need to create some files.
 
 # Extracting sector size
 SECTOR_SIZE=$(fdisk -l $IMAGE_FILE | grep "Sector size" | awk '{print $4}')
@@ -140,6 +119,10 @@ if [ -d "/mnt/rpi" ]; then
     cd /mnt/rpi
     sudo touch ssh
     sudo rm -f userconf.txt > /dev/null
+
+    # Create a hashed password with openssl. The -6 option instructs OpenSSL 
+    # to use Sha512. This applies salting (i.e., the hash will be different every time).
+    # https://www.openssl.org/docs/man1.0.2/man1/passwd.html#:~:text=The%20passwd%20command%20computes%20the,or%20from%20the%20terminal%20otherwise.
     HASHED_PASSWORD=$(openssl passwd -6 "${PASSWORD}")
     echo "${USERNAME}:${HASHED_PASSWORD}" | sudo tee userconf.txt > /dev/null
 fi
@@ -147,7 +130,7 @@ fi
 cd $ROOT_DIR
 sudo umount /mnt/rpi 
 
-# Fourth step: Run the QEMU emulator
+# Run the QEMU emulator
 # We need to resize the image to 4GB first (just for the SDK image--should be configurable later)
 # since the virtualizer does not accept raw images whose sizes are not powers of 2. 
 sudo qemu-img resize "$IMAGE_FILE" 4G
@@ -169,9 +152,9 @@ sudo qemu-img resize "$IMAGE_FILE" 4G
 sudo qemu-system-aarch64 \
         -machine virt \
         -cpu cortex-a72 \
-        -smp 6 \
+        -smp $NUM_RPI_CPU_CORES \
         -m 4G \
-        -kernel Image \
+        -kernel $KERNEL_IMAGE \
         -append "root=/dev/vda2 rootfstype=ext4 rw panic=0 console=ttyAMA0" \
         -drive format=raw,file=$IMAGE_FILE,if=none,id=hd0,cache=writeback \
         -device virtio-blk,drive=hd0,bootindex=0 \

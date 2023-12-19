@@ -58,9 +58,47 @@ After ~10 minutes, and then look in the `deploy/` for a file with a name like
 
 Copy this to your laptop, and then you can burn it to an SD card using the [Raspberry Pi Image](https://github.com/raspberrypi/rpi-imager).
 
-TODO: figure out how to use them inside `qemu`.
 TODO: set up some tests inside `qemu` that things are working.
 TODO: write those tests into CI/CD actions.
+
+
+## Running the Raspberry Pi Image with QEMU 
+To emulate the Raspberry Pi image with QEMU, we will first need to install the Linux kernel for QEMU on the 
+host machine and install other necessary packages required for QEMU to work. To do this, run 
+
+```shell 
+chmod +x setup-qemu-kernel.sh 
+./setup-qemu-kernel.sh 
+```
+
+This needs to be done only once. It will download a linux kernel of 36MB. 
+
+To run the emulator, go ahead and run 
+
+```shell 
+chmod +x rpistart.sh 
+./rpistart.sh -i <absolute-path-to-image>
+```
+
+The image path must be absolute and it needs to be decompressed. You can decompress the image by runnning 
+
+```shell
+xz -d <path-to-compressed-image> 
+```
+
+This will start the emulator. You can SSH into it by running 
+
+```shell
+ssh -l pi localhost -p 2222
+```
+
+By default, the username and password are `pi` and `raspberry` respectively. You can overrride these by setting 
+the following environment variables before running the `rpistart.sh` script. 
+
+```shell
+export USERNAME=<username>
+export PASSWORD=<password>
+```
 
 
 ## What's up with this file?
