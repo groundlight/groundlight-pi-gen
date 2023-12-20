@@ -1,0 +1,38 @@
+name: Test inside QEMU 
+
+on: 
+  push:
+    branches: [ main ]
+    tags:
+      - '*'
+  pull_request:
+    # All branches
+
+jobs: 
+  build-os-image:
+    runs-ons: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install needed packages
+      run: |
+        sudo apt update 
+        sudo apt install binfmt-support qemu qemu-user-static sshpass 
+        sudo update-binfmts --enable 
+
+    - name: Build the full images 
+      run: |
+        ./dobuild.sh 
+
+    - name: Build the Linux kernel for QEMU 
+      run: ./setup-qemu-kernel.sh 
+
+    - name: Start the Emulator 
+      run: |
+        ./rpistart.sh 
+        # Copy the test script 
+        sshpass -p "raspberry" scp -P 2222 tests/test_build_works.py pi@localhost:/home/pi
+        # SSH into it 
+        sshpass -p "raspberry" ssh -l pi localhost -p 2222
+
