@@ -21,12 +21,12 @@ jobs:
         sudo apt install binfmt-support qemu qemu-user-static sshpass 
         sudo update-binfmts --enable 
 
+    - name: Build the Linux kernel for QEMU 
+      run: ./setup-qemu-kernel.sh 
+
     - name: Build the full images 
       run: |
         ./dobuild.sh 
-
-    - name: Build the Linux kernel for QEMU 
-      run: ./setup-qemu-kernel.sh 
 
     - name: Start the Emulator 
       run: |
