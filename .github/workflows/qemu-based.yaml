@@ -35,4 +35,5 @@ jobs:
         sshpass -p "raspberry" scp -P 2222 tests/test_build_works.py pi@localhost:/home/pi
         # SSH into it 
         sshpass -p "raspberry" ssh -l pi localhost -p 2222
+        python test_build_works.py 
 
