@@ -10,7 +10,8 @@ on:
 
 jobs: 
   build-os-image:
-    runs-on: ubuntu-22.04
+    runs-on: 
+      labels: ubuntu-22.04-8core
 
     steps:
     - uses: actions/checkout@v4
