@@ -57,6 +57,7 @@ if [ ! -f "$IMAGE_FILE" ]; then
     exit 1
 elif [[ "$IMAGE_FILE" != /* ]]; then 
     echo "The image path is not absolute: '$IMAGE_FILE'"
+    exit 1
 elif [[ "$IMAGE_FILE" != *qemu.img ]]; then
     echo "The image does not have the expected 'qemu.img' suffix: '$IMAGE_FILE'"
     echo "You probably forgot to decompress the image by running 'xz -d <*.img.xz>'"
@@ -125,6 +126,9 @@ if [ -d "/mnt/rpi" ]; then
     # https://www.openssl.org/docs/man1.0.2/man1/passwd.html#:~:text=The%20passwd%20command%20computes%20the,or%20from%20the%20terminal%20otherwise.
     HASHED_PASSWORD=$(openssl passwd -6 "${PASSWORD}")
     echo "${USERNAME}:${HASHED_PASSWORD}" | sudo tee userconf.txt > /dev/null
+else
+    echo "Image not mounted to /mnt/rpi"
+    exit 1
 fi
 
 cd $ROOT_DIR
