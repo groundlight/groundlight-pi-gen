@@ -131,9 +131,6 @@ cd $ROOT_DIR
 sudo umount /mnt/rpi 
 
 # Run the QEMU emulator
-# We need to resize the image to 4GB first (just for the SDK image--should be configurable later)
-# since the virtualizer does not accept raw images whose sizes are not powers of 2. 
-sudo qemu-img resize "$IMAGE_FILE" 4G
 
 # - kernel: This is the path to the QEMU kernel downloaded in step 2
 # - append: Providing the boot arguments directly to the kernel, telling it where to find the 

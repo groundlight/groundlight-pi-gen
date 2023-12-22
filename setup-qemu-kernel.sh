@@ -11,7 +11,10 @@ ARCH=arm64
 ROOT_DIR=$HOME 
 NUM_CORES=${NUM_CORES:-$(nproc)}
 IMAGE_FILE=""
-KERNEL_VERSION="linux-6.1.34"
+
+# The most recent linux kernel version at the time of this writing. 
+# Might need to be updated in the future. 
+KERNEL_VERSION="linux-6.6.8"
 
 
 # Install the required packages. These include cross-compilers for arm64

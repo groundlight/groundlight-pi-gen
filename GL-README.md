@@ -84,26 +84,23 @@ To emulate the Raspberry Pi image with QEMU, we will first need to install the L
 host machine and install other necessary packages required for QEMU to work. To do this, run 
 
 ```shell 
-chmod +x setup-qemu-kernel.sh 
 ./setup-qemu-kernel.sh 
 ```
 
-This needs to be done only once. It will download a linux kernel of 36MB. 
-
-To run the emulator, go ahead and run 
-
-```shell 
-chmod +x rpistart.sh 
-./rpistart.sh -i <absolute-path-to-image>
-```
-
-The image path must be absolute and it needs to be decompressed. You can decompress the image by runnning 
+This needs to be done only once. It will download a linux kernel(v6.6.8) of 40MB. 
+If you haven't decompressed the image you wan to use, you can do so by running
 
 ```shell
 xz -d <path-to-compressed-image> 
 ```
 
-This will start the emulator. You can SSH into it by running 
+To run the emulator, go ahead and run 
+
+```shell 
+./rpistart.sh -i <absolute-path-to-image>
+```
+
+You can SSH into it by running 
 
 ```shell
 ssh -l pi localhost -p 2222
