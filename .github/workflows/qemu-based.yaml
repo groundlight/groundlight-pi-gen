@@ -29,6 +29,12 @@ jobs:
       run: |
         ./dobuild.sh 
 
+    - name: Decompress the SDK image 
+      run: |
+        IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
+        # Decompress with xz 
+        xz -d $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img.xz 
+
     - name: Start the Emulator 
       run: |
         IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
