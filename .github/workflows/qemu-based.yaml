@@ -32,6 +32,15 @@ jobs:
     - name: Decompress the SDK image 
       run: |
         IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
+
+        # Verify that there are files
+        ls -la $IMAGE_BASE_PATH
+
+        if [ ! -f $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img.xz ]; then
+          echo "Error: The file image_*-GroundlightPi-sdk-only-qemu.img.xz does not exist."
+          exit 1
+        fi
+
         # Decompress with xz 
         xz -d $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img.xz 
 
