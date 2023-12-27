@@ -29,6 +29,11 @@ jobs:
       run: |
         ./dobuild.sh 
 
+    - name: List output files
+      run: |
+        pwd 
+        ls -lh deploy
+
     - name: Decompress the SDK image 
       run: |
         IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
