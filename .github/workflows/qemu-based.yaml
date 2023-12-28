@@ -8,6 +8,9 @@ on:
   pull_request:
     # All branches
 
+env:
+  PYTHON_VERSION: "3.11"
+
 jobs: 
   build-os-image:
     runs-on: 
@@ -21,6 +24,11 @@ jobs:
         sudo apt update 
         sudo apt install binfmt-support qemu qemu-user-static sshpass 
         sudo update-binfmts --enable 
+
+    - name: Install python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Build the Linux kernel for QEMU 
       run: ./setup-qemu-kernel.sh 
@@ -36,7 +44,7 @@ jobs:
 
     - name: Decompress the SDK image 
       run: |
-        IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
+        IMAGE_BASE_PATH=$HOME/work/groundlight-pi-gen/groundlight-pi-gen/deploy
 
         # Verify that there are files
         ls -la $IMAGE_BASE_PATH
@@ -51,7 +59,7 @@ jobs:
 
     - name: Start the Emulator 
       run: |
-        IMAGE_BASE_PATH=$HOME/groundlight-pi-gen/deploy
+        IMAGE_BASE_PATH=$HOME/work/groundlight-pi-gen/groundlight-pi-gen/deploy
         ./rpistart.sh -i $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img
         # Copy the test script 
         sshpass -p "raspberry" scp -P 2222 tests/test_build_works.py pi@localhost:/home/pi
