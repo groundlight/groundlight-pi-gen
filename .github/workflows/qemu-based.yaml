@@ -60,9 +60,14 @@ jobs:
     - name: Start the Emulator 
       run: |
         IMAGE_BASE_PATH=$HOME/work/groundlight-pi-gen/groundlight-pi-gen/deploy
-        ./rpistart.sh -i $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img
+        ./rpistart.sh -i $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img &
+
+        # give the emulator some time to start 
+        sleep 50
+
         # Copy the test script 
         sshpass -p "raspberry" scp -P 2222 tests/test_build_works.py pi@localhost:/home/pi
+        
         # SSH into it 
         sshpass -p "raspberry" ssh -l pi localhost -p 2222
         python test_build_works.py 

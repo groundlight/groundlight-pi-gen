@@ -156,7 +156,7 @@ sudo qemu-system-aarch64 \
         -smp $NUM_RPI_CPU_CORES \
         -m 4G \
         -kernel $KERNEL_IMAGE \
-        -append "root=/dev/vda2 rootfstype=ext4 rw panic=0 console=ttyAMA0" \
+        -append "root=/dev/vda2 rootfstype=ext4 rw panic=0 console=ttyAMA0 autologin" \
         -drive format=raw,file=$IMAGE_FILE,if=none,id=hd0,cache=writeback \
         -device virtio-blk,drive=hd0,bootindex=0 \
         -netdev user,id=mynet,hostfwd=tcp::2222-:22 \
