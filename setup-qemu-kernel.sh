@@ -62,6 +62,3 @@ ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make kvm_guest.config
 ARCH=${ARCH} CROSS_COMPILE=/bin/aarch64-linux-gnu- make -j${NUM_CORES}
 
 cp arch/${ARCH}/boot/Image ${ROOT_DIR}
-
-rm -rf ${KERNEL_VERSION}
-rm ${KERNEL_VERSION}.tar.xz 
