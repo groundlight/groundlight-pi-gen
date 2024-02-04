@@ -5,9 +5,9 @@ and the Monitoring Notification Server (MNS).  The OS images are available in th
 
 There are several different images available, depending on your needs, from smallest to largest:
 
-- **`sdk-only`** - a minimal image with just the python sdk installed.  this is the smallest image, and is suitable for running the sdk on a raspberry pi zero w.  it is also suitable for running the sdk on a raspberry pi 3 or 4, if you don't need the gui.
-- **`mns-headless`** - an image with the [groundlight monitoring notification server (mns)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "headless" means it runs the server, which serves html pages, but has no browser or gui to use it from.  you need to connect from another machine to use mns.  the mns provides a simple way to configure cameras, groundlight detectors, and send notifications conditions are met.
-- **`desktop`** - an image with the groundlight mns installed, and a desktop gui with a browser.  this is appropriate for a raspberry pi which will have a screen attached to it.
+- **`sdk-only`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
+- **`mns-headless`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means it runs the server, which serves HTML pages, but has no browser or GUI to use it from.  You need to connect from another machine to use MNS.  The MNS provides a simple way to configure cameras, Groundlight detectors, and send notifications conditions are met.
+- **`desktop`** - an image with the Groundlight MNS installed, and a desktop GUI with a browser.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
 - **`edge`** - Not available yet.  The Edge Endpoint server is still too resource hungry to run on a Raspberry Pi.  Please [leave a comment](https://github.com/groundlight/groundlight-pi-gen/issues/5) if you'd like to use this.
 
 
