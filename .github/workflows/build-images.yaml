@@ -8,9 +8,10 @@ on:
   pull_request:
     # all branches for now while we're testing.
     #branches: [ main ]
-  concurrency: 
-    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-    cancel-in-progress: true
+  # The concurrency rule seems to not be working.
+  #concurrency: 
+    #group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    #cancel-in-progress: true
 
 jobs:
   build:
