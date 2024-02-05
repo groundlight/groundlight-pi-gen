@@ -118,3 +118,15 @@ export PASSWORD=<password>
 ## What's up with this file?
 
 This file is called `GL-README.md` and is elevated to the github repo homepage by a symlink `.github/README.md`.
+
+## Merging from upstream
+
+Here's the process
+
+```
+git remote add upstream https://github.com/RPi-Distro/pi-gen
+git fetch upstream
+git merge upstream/arm64
+```
+
+Then test test test.
