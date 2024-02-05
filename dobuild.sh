@@ -7,6 +7,16 @@
 
 set -e  # exit on error
 
+# Move to this script's directory
+cd "$(dirname "$0")"
+
+# See if CLEAN=1 flag was set
+if [ "$CLEAN" = "1" ]; then
+    echo "Clearing out all previous build files"
+    sudo rm -rf ./deploy ./work
+    docker rm -v pigen_work || echo "Failed to remove pigen_work, because it doesn't exist, which is fine."
+fi
+
 # check if the IS_RELEASE variable is set to "1"
 if [ "$IS_RELEASE" = "1" ]; then
     echo "Building release version"
