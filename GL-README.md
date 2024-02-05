@@ -7,7 +7,7 @@ There are several different images available, depending on your needs, from smal
 
 - **`sdk-only`** - A minimal image with just the Python SDK installed.  This is the smallest image, and is suitable for running the SDK on a Raspberry Pi Zero W.  It is also suitable for running the SDK on a Raspberry Pi 3 or 4, if you don't need the GUI.
 - **`mns-headless`** - an image with the [Groundlight Monitoring Notification Server (MNS)](https://github.com/groundlight/monitoring-notification-server) installed for headless use.  "Headless" means it runs the server, which serves HTML pages, but has no browser or GUI to use it from.  You need to connect from another machine to use MNS.  The MNS provides a simple way to configure cameras, Groundlight detectors, and send notifications conditions are met.
-- **`full`** - an image with the Groundlight MNS installed, and a desktop GUI with a browser.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
+- **`desktop`** - an image with the Groundlight MNS installed, and a desktop GUI with a browser.  This is appropriate for a Raspberry Pi which will have a screen attached to it.
 - **`edge`** - Not available yet.  The Edge Endpoint server is still too resource hungry to run on a Raspberry Pi.  Please [leave a comment](https://github.com/groundlight/groundlight-pi-gen/issues/5) if you'd like to use this.
 
 
@@ -16,6 +16,14 @@ There are several different images available, depending on your needs, from smal
 This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`gl-config`)[gl-config] file is the key source of control.  (What is called "config" in the original.)
 
 Note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
+
+### Stages
+
+- **`sdk-only`** - Saved after `stage-gl1`
+- **`mns-headless`** - Saved after `stage-gl2`
+- **`desktop`** - Saved after `stage4`
+
+Refer to the [`gl-config`](./gl-config) and [`gl-config-release`](./gl-config-release) files for the how the stages are used.
 
 
 ## Building Images
@@ -62,7 +70,7 @@ touch stage-gl1/SKIP_IMAGES
 To start over try
 
 ```
-./dobuild.sh CLEAN=1
+CLEAN=1 ./dobuild.sh
 ```
 
 **Unmount errors** - try `sudo mv work deleteme-work`
@@ -118,3 +126,15 @@ export PASSWORD=<password>
 ## What's up with this file?
 
 This file is called `GL-README.md` and is elevated to the github repo homepage by a symlink `.github/README.md`.
+
+## Merging from upstream
+
+Here's the process
+
+```
+git remote add upstream https://github.com/RPi-Distro/pi-gen
+git fetch upstream
+git merge upstream/arm64
+```
+
+Then test test test.

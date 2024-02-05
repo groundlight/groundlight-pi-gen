@@ -1,0 +1,88 @@
+name: Minimal test of python libraries inside QEMU
+
+on: 
+  push:
+    branches: [ main ]
+    tags:
+      - '*'
+  pull_request:
+     # All branches
+  # This seems to not be working.
+  #concurrency: 
+    #group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    #cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs: 
+  build-test-python-install:
+    runs-on: 
+      labels: ubuntu-22.04-8core
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install needed packages
+      run: |
+        sudo apt update 
+        sudo apt install binfmt-support qemu qemu-user-static sshpass 
+        sudo update-binfmts --enable 
+
+    - name: Install python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Build the Linux kernel for QEMU 
+      run: ./setup-qemu-kernel.sh 
+
+    - name: Build the minimal image for testing
+      run: |
+        # Make it only build up to stage-gl1
+        touch stage-gl2/SKIP
+        touch stage-gl2/SKIP_IMAGES
+        touch stage3/SKIP
+        touch stage3/SKIP_IMAGES
+        touch stage4/SKIP
+        touch stage4/SKIP_IMAGES
+        # Actually run the build.
+        ./dobuild.sh 
+
+    - name: List output files
+      run: |
+        pwd 
+        ls -lh deploy
+
+    - name: Decompress the SDK image 
+      run: |
+        IMAGE_BASE_PATH=$HOME/work/groundlight-pi-gen/groundlight-pi-gen/deploy
+
+        # Verify that there are files
+        ls -la $IMAGE_BASE_PATH
+
+        if [ ! -f $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img.xz ]; then
+          echo "Error: The file image_*-GroundlightPi-sdk-only-qemu.img.xz does not exist."
+          exit 1
+        fi
+
+        # Decompress with xz 
+        xz -d $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img.xz 
+
+    - name: Start the Emulator 
+      run: |
+        IMAGE_BASE_PATH=$HOME/work/groundlight-pi-gen/groundlight-pi-gen/deploy
+        ./rpistart.sh -i $IMAGE_BASE_PATH/image_*-GroundlightPi-sdk-only-qemu.img &
+
+        set -ex  # see what's happening
+
+        # give the emulator some time to start 
+        sleep 50
+
+        # Copy the test script 
+        sshpass -v -p "raspberry" scp -v -P 2222 tests/test_build_works.py pi@localhost:/home/pi
+        
+        # SSH into it 
+        sshpass -v -p "raspberry" ssh -v -l pi localhost -p 2222
+        python test_build_works.py 
+
