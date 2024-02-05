@@ -62,7 +62,7 @@ touch stage-gl1/SKIP_IMAGES
 To start over try
 
 ```
-./dobuild.sh CLEAN=1
+CLEAN=1 ./dobuild.sh
 ```
 
 **Unmount errors** - try `sudo mv work deleteme-work`
