@@ -10,6 +10,10 @@ python3-venv
 # We do install OS's opencv to make sure all the .so files are available.
 python3-opencv
 
+# We need to make sure to install this before framegrab -- required to install the netifaces 
+# package. 
+python3-dev
+
 # Some nice-to-have utilities
 iotop nethogs net-tools telnet
 git curl wget
