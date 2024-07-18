@@ -1,7 +1,7 @@
 # Absolute basics
 python3 python-is-python3
 
-# we don't install things like python3-pip or many libraries here, because pip and apt don't 
+# We don't install things like python3-pip or many libraries here, because pip and apt don't 
 # get along, so we'll set up a venv later.
 
 # We'll set up a venv to get around this.
@@ -9,6 +9,10 @@ python3-venv
 
 # We do install OS's opencv to make sure all the .so files are available.
 python3-opencv
+
+# We need to make sure to install this before framegrab -- required to install the netifaces 
+# package. 
+python3-dev
 
 # Some nice-to-have utilities
 iotop nethogs net-tools telnet
