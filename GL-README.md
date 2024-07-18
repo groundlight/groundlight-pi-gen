@@ -13,7 +13,7 @@ There are several different images available, depending on your needs, from smal
 
 ## Source Code
 
-This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The (`gl-config`)[gl-config] file is the key source of control.  (What is called "config" in the original.)
+This build system is based on [pi-gen](https://github.com/RPi-Distro/pi-gen).  Refer to its [original README](/README.md) for how everything works.  The [`gl-config`](gl-config) file is the key source of control.  (What is called "config" in the original.)
 
 Note that we're tracking the `arm64` branch, not main.  (If we build off the main branch, we hit [an issue with missing `arm/v8` docker images](https://github.com/groundlight/monitoring-notification-server/issues/39) and likely others, because we make these funky machines with a 64-bit kernel, but 32-bit applications.)
 
