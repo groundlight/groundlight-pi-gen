@@ -3,7 +3,8 @@
 # shellcheck disable=SC2119
 run_sub_stage()
 {
-	log "Begin ${SUB_STAGE_DIR}"
+	log " "
+	log "---====> substage ${SUB_STAGE_DIR} <====---"
 	pushd "${SUB_STAGE_DIR}" > /dev/null
 	for i in {00..99}; do
 		if [ -f "${i}-debconf" ]; then
@@ -81,7 +82,9 @@ EOF
 
 
 run_stage(){
-	log "Begin ${STAGE_DIR}"
+	log " "
+	log "        --------========> STAGE: ${STAGE_DIR} <========----------"
+	log " "
 	STAGE="$(basename "${STAGE_DIR}")"
 
 	pushd "${STAGE_DIR}" > /dev/null

@@ -6,3 +6,10 @@ SKIP
 SKIP_IMAGES
 .pc
 *-pc
+
+
+#
+# Groundlight additions below
+#
+*.swp
+/deleteme*

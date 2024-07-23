@@ -1,0 +1,16 @@
+source gl-config
+
+# Turn off QEMU for release builds
+USE_QEMU=0
+
+# Higher compression takes longer, so it's turned down during dev.
+# We should turn it back up when we're ready to publish.
+# For reference, with a 3.3GB base .img file 
+# Times are on a 4 core m7g instance, and include cached build.sh time
+# xz level 0 took 1m50s to compress to 1.1GB
+# xz level 1 took 2m20s to compress to 986MB
+# xz level 3 took 3m30s to compress to 950MB
+# xz level 9 took 7m30s to compress to 733MB
+# Publish settings:
+DEPLOY_COMPRESSION=xz
+COMPRESSION_LEVEL=9
