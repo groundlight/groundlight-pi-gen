@@ -11,7 +11,7 @@ python3-venv
 python3-opencv
 
 # We need to make sure to install this before framegrab -- required to install the netifaces 
-# package. 
+# package.   In general, python packages which build C code need this to install even through pip
 python3-dev
 
 # Some nice-to-have utilities
